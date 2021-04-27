@@ -1,0 +1,17 @@
+[package]
+name = "rc5"
+version = "0.1.0"
+authors = ["Antonio Dropulic <adropulic@gmail.com>"]
+edition = "2021"
+
+[dependencies]
+static_assertions = "1.1.0"
+generic-array = "0.14.6"
+cipher = "0.4.3"
+
+[dev-dependencies]
+cipher = { version = "0.4.3", features = ["dev"] }
+
+[features]
+zeroize = ["cipher/zeroize"]
+core = []
