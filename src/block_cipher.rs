@@ -1,22 +1,20 @@
-use cipher::consts::{U16, U8};
+use cipher::consts::{U12, U16, U26, U8};
 
-use crate::core::{decrypt_block, encrypt_block, substitute_key, ExpandedKeyTable, Key};
+use crate::core::{decrypt_block, encrypt_block, substitute_key, ExpandedKeyTable};
 use cipher::{impl_simple_block_encdec, AlgorithmName, KeyInit};
 use cipher::{inout::InOut, Block, BlockCipher, KeySizeUser};
 
 pub struct RC5_32_12_16 {
-    key_table: ExpandedKeyTable,
+    key_table: ExpandedKeyTable<u32, U26>,
 }
 
 impl RC5_32_12_16 {
-    fn encrypt_block(&self, mut block: InOut<'_, '_, Block<Self>>) {
-        let ct = encrypt_block(block.get_in().as_ref(), &self.key_table);
-        block.get_out().copy_from_slice(&ct);
+    fn encrypt_block(&self, block: InOut<'_, '_, Block<Self>>) {
+        encrypt_block::<u32, U12>(block, &self.key_table);
     }
 
-    fn decrypt_block(&self, mut block: InOut<'_, '_, Block<Self>>) {
-        let ct = decrypt_block(block.get_in().as_ref(), &self.key_table);
-        block.get_out().copy_from_slice(&ct);
+    fn decrypt_block(&self, block: InOut<'_, '_, Block<Self>>) {
+        decrypt_block::<u32, U12>(block, &self.key_table);
     }
 }
 
@@ -29,7 +27,7 @@ impl KeySizeUser for RC5_32_12_16 {
 impl KeyInit for RC5_32_12_16 {
     fn new(key: &cipher::Key<Self>) -> Self {
         Self {
-            key_table: substitute_key(AsRef::<Key>::as_ref(key)),
+            key_table: substitute_key::<u32, U12, U16>(key),
         }
     }
 }

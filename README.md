@@ -1,7 +1,11 @@
 ## Todo
 
-- inspect correctness
 - impl for more than one wrb
-- new type instead of aliases / better naming for func
-- clean docs
-- test vectors
+    - try impl using typenum
+        - missing range limiters
+        - clean up bounds
+        - make block cypher generic
+
+- test vectors for all impls
+- docs
+
