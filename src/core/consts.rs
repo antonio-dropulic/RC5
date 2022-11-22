@@ -5,12 +5,13 @@
 
 use std::ops::{Add, BitXor};
 
-use cipher::typenum::U4;
+use cipher::typenum::{Diff, Prod, Quot, Sum, U1, U2, U4};
 use generic_array::{ArrayLength, GenericArray};
 
 // TODO: Sealed
 pub trait Word: Default + Copy + From<u8> + Add<Output = Self> {
     type Bytes: ArrayLength<u8>;
+
     const ZERO: Self;
     const THREE: Self;
     const EIGHT: Self;
@@ -28,8 +29,6 @@ pub trait Word: Default + Copy + From<u8> + Add<Output = Self> {
     fn to_le_bytes(self) -> GenericArray<u8, Self::Bytes>;
 
     fn bitxor(self, other: Self) -> Self;
-
-    // Add bytes
 }
 
 impl Word for u32 {
@@ -71,7 +70,11 @@ impl Word for u32 {
     }
 }
 
-pub type Block<N> = generic_array::GenericArray<u8, N>;
-pub type Key<N> = generic_array::GenericArray<u8, N>;
-pub type ExpandedKeyTable<W, R> = generic_array::GenericArray<W, R>;
-pub type KeyAsWords<W, N> = generic_array::GenericArray<W, N>;
+pub type BlockSize<W> = Prod<<W as Word>::Bytes, U2>;
+pub type ExpandedKeyTableSize<R> = Prod<Sum<R, U1>, U2>;
+pub type KeyAsWordsSize<W, B> = Quot<Diff<Sum<B, <W as Word>::Bytes>, U1>, <W as Word>::Bytes>;
+
+pub type Block<W> = generic_array::GenericArray<u8, BlockSize<W>>;
+pub type Key<B> = generic_array::GenericArray<u8, B>;
+pub type ExpandedKeyTable<W, R> = generic_array::GenericArray<W, ExpandedKeyTableSize<R>>;
+pub type KeyAsWords<W, B> = generic_array::GenericArray<W, KeyAsWordsSize<W, B>>;

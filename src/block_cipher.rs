@@ -1,11 +1,11 @@
-use cipher::consts::{U12, U16, U26, U8};
+use cipher::consts::{U12, U16, U8};
 
 use crate::core::{decrypt_block, encrypt_block, substitute_key, ExpandedKeyTable};
 use cipher::{impl_simple_block_encdec, AlgorithmName, KeyInit};
 use cipher::{inout::InOut, Block, BlockCipher, KeySizeUser};
 
 pub struct RC5_32_12_16 {
-    key_table: ExpandedKeyTable<u32, U26>,
+    key_table: ExpandedKeyTable<u32, U12>,
 }
 
 impl RC5_32_12_16 {
